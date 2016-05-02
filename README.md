@@ -23,4 +23,6 @@ The file contains additions and deletions to the NavData.
 
 `AIRMN|32.5238111|-85.772963` The waypoint `AIRMN` is added at latitude `32.5238111`, longitude `-85.772963`.
 
+`AIRMN|Intersection|32.5238111|-85.772963` The waypoint `AIRMN` is added at latitude `32.5238111`, longitude `-85.772963`, given the type `Intersection`.
+
 __Valid Types:__ `Airport`, `Intersection`, `VOR`, `NDB`
