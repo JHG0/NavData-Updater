@@ -111,10 +111,11 @@ public class DataHandler
             Element element = doc.createElement("Waypoint");
             String[] q = s.split("\\|");
             element.setAttribute("ID", q[0]);
-            element.setAttribute("Type", "Intersection");
+            if (q.length == 3) element.setAttribute("Type", "Intersection");
+            else if (q.length == 4) element.setAttribute("Type", q[1]);
             Element child = doc.createElement("Location");
-            child.setAttribute("Lat", q[1].replaceAll("[^0-9A-Z\\.\\-]", ""));
-            child.setAttribute("Lon", q[2].replaceAll("[^0-9A-Z\\.\\-]", ""));
+            child.setAttribute("Lat", q[q.length - 2].replaceAll("[^0-9A-Z\\.\\-]", ""));
+            child.setAttribute("Lon", q[q.length - 1].replaceAll("[^0-9A-Z\\.\\-]", ""));
             element.appendChild(child);
             doc.getDocumentElement().appendChild(element);
         }
@@ -134,7 +135,7 @@ public class DataHandler
         if (exceptions == null || exceptions.isEmpty()) return new ArrayList<String>();
         List<String> additions = new ArrayList<String>();
         for (String s : exceptions)
-            if (s.split("\\|").length == 3)
+            if (s.split("\\|").length == 3 || s.split("\\|").length == 4)
                 additions.add(s);
         return additions;
     }
