@@ -17,12 +17,13 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 public class DataHandler
 {
-    private ArrayList<String> exceptions;
+    private List<String> exceptions;
 
-    public DataHandler(ArrayList exceptions)
+    public DataHandler(List exceptions)
     {
         this.exceptions = exceptions;
     }
@@ -32,10 +33,11 @@ public class DataHandler
         long z = System.currentTimeMillis();
         try
         {
-            updateAirports();
+            boolean a = updateAirports();
+            if (a) return -3;
         } catch (Exception ex)
         {
-            if(ex instanceof FileNotFoundException)
+            if (ex instanceof FileNotFoundException)
                 return -2;
             else
                 return -1;
@@ -43,10 +45,12 @@ public class DataHandler
 
         try
         {
-            updateWaypoints();
+            boolean a = updateWaypoints();
+            if (a) return -3;
         } catch (Exception ex)
         {
-            if(ex instanceof FileNotFoundException)
+            ex.printStackTrace();
+            if (ex instanceof FileNotFoundException)
                 return -2;
             else
                 return -1;
@@ -57,6 +61,7 @@ public class DataHandler
 
     private boolean isRemovable(String id, String type)
     {
+        if (exceptions == null || exceptions.isEmpty()) return false;
         for (String s : exceptions)
         {
             String[] q = s.split("\\|");
@@ -67,8 +72,12 @@ public class DataHandler
         return false;
     }
 
-    private void updateAirports() throws Exception
+    private boolean updateAirports() throws Exception
     {
+        File vSTARS = new File(System.getProperty("user.home") + "\\AppData\\Roaming\\vSTARS\\NavData");
+        File vERAM = new File(System.getProperty("user.home") + "\\AppData\\Local\\vERAM");
+        if (!vSTARS.exists() && !vERAM.exists()) return true;
+
         URL xmlURL = new URL("http://www.myfsim.com/sectorfilecreation/Airports.xml");
         InputStream xml = xmlURL.openStream();
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -85,19 +94,28 @@ public class DataHandler
             if (nNode.getNodeType() == Node.ELEMENT_NODE)
             {
                 Element eElement = (Element) nNode;
+                eElement.setAttribute("MagVar", "0");
                 if (isRemovable(eElement.getAttribute("ID"), null)) eElement.getParentNode().removeChild(eElement);
             }
         }
 
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
+
         DOMSource source = new DOMSource(doc);
-        StreamResult result = new StreamResult(new File("C:\\Users\\Josh\\Downloads\\Airports.xml"));
-        transformer.transform(source, result);
+        if (vSTARS.exists())
+            transformer.transform(source, new StreamResult(vSTARS + "\\Airports.xml"));
+        if (vERAM.exists())
+            transformer.transform(source, new StreamResult(vERAM + "\\Airports.xml"));
+        return false;
     }
 
-    private void updateWaypoints() throws Exception
+    private boolean updateWaypoints() throws Exception
     {
+        File vSTARS = new File(System.getProperty("user.home") + "\\AppData\\Roaming\\vSTARS\\NavData");
+        File vERAM = new File(System.getProperty("user.home") + "\\AppData\\Local\\vERAM");
+        if (!vSTARS.exists() && !vERAM.exists()) return true;
+
         URL xmlURL = new URL("http://www.myfsim.com/sectorfilecreation/Waypoints.xml");
         InputStream xml = xmlURL.openStream();
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -124,10 +142,10 @@ public class DataHandler
             Element element = doc.createElement("Waypoint");
             String[] q = s.split("\\|");
             element.setAttribute("ID", q[0]);
-            element.setAttribute("Type", "Generic");
+            element.setAttribute("Type", "Intersection");
             Element child = doc.createElement("Location");
-            child.setAttribute("Lat", q[1]);
-            child.setAttribute("Lon", q[2]);
+            child.setAttribute("Lat", q[1].replaceAll("[^0-9A-Z\\.\\-]", ""));
+            child.setAttribute("Lon", q[2].replaceAll("[^0-9A-Z\\.\\-]", ""));
             element.appendChild(child);
             doc.getDocumentElement().appendChild(element);
         }
@@ -135,13 +153,17 @@ public class DataHandler
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
         DOMSource source = new DOMSource(doc);
-        StreamResult result = new StreamResult(new File("C:\\Users\\Josh\\Downloads\\Waypoints.xml"));
-        transformer.transform(source, result);
+        if (vSTARS.exists())
+            transformer.transform(source, new StreamResult(vSTARS + "\\Waypoints.xml"));
+        if (vERAM.exists())
+            transformer.transform(source, new StreamResult(vERAM + "\\Waypoints.xml"));
+        return false;
     }
 
-    private ArrayList<String> getAdditions()
+    private List<String> getAdditions()
     {
-        ArrayList<String> additions = new ArrayList<String>();
+        if (exceptions == null || exceptions.isEmpty()) return new ArrayList<String>();
+        List<String> additions = new ArrayList<String>();
         for (String s : exceptions)
             if (s.split("\\|").length == 3)
                 additions.add(s);

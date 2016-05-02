@@ -4,19 +4,24 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+@SuppressWarnings("UnusedDeclaration")
 public class Display
 {
-    @SuppressWarnings("All")
+
     private static JFrame frame;
     private JPanel panel;
     private JButton closeButton;
     private JButton updateNavDataButton;
-    private JButton saveExceptionsButton;
-    private JButton importExceptionsButton;
-    private JButton setExceptionsButton;
     private JTextField outputMS;
+
+    private ErrorDialog ed = new ErrorDialog();
 
     public Display()
     {
@@ -33,16 +38,12 @@ public class Display
             public void actionPerformed(ActionEvent e)
             {
                 ArrayList<String> exceptions = new ArrayList<String>();
-                exceptions.add("KMIA");
-                exceptions.add("AR*|Airport");
-                exceptions.add("WWWWW|12.32|44.21");
-                DataHandler dh = new DataHandler(exceptions);
+                DataHandler dh = new DataHandler(getExceptions());
                 long out = dh.updateData();
                 if (out > 0)
                     outputMS.setText("" + out);
                 else
                 {
-                    ErrorDialog ed = new ErrorDialog();
                     if (out == -1)
                         ed.displayError("There was an error parsing NavData.");
                     else if (out == -2)
@@ -65,5 +66,31 @@ public class Display
         frame.setResizable(false);
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
+    }
+
+    private List<String> getExceptions()
+    {
+        try
+        {
+            File vSTARS = new File(System.getProperty("user.home") + "\\AppData\\Roaming\\vSTARS\\NavData\\NavDataExceptions.txt");
+            File vERAM = new File(System.getProperty("user.home") + "\\AppData\\Local\\vERAM\\NavDataExceptions.txt");
+            File f;
+            if (vSTARS.exists()) f = vSTARS;
+            else if (vERAM.exists()) f = vERAM;
+            else return new ArrayList<String>();
+            BufferedReader br = new BufferedReader(new FileReader(f));
+            String line = br.readLine();
+            String s = "";
+            while (line != null)
+            {
+                s += line + "\n";
+                line = br.readLine();
+            }
+            br.close();
+            return Arrays.asList(s.split("\n"));
+        } catch (Exception ignored)
+        {
+        }
+        return new ArrayList<String>();
     }
 }
