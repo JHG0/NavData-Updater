@@ -6,7 +6,7 @@ This software automatically updates NavData for vSTARS and vERAM.
 The NavData is provided by [Casey Diers](http://www.myfsim.com/sectorfilecreation/vSTARSDump.php). 
 
 #### How to Use
-1\) Download NavDataUpdater.jar
+1\) [Download NavDataUpdater.jar](https://github.com/JHG0/NavData-Updater/blob/master/NavData%20Updater.jar?raw=true)
 
 2\) Open the software. 
 
