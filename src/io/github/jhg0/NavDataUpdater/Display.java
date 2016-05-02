@@ -1,12 +1,15 @@
 package io.github.jhg0.NavDataUpdater;
 
+import javax.naming.ConfigurationException;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,6 +23,7 @@ public class Display
     private JButton closeButton;
     private JButton updateNavDataButton;
     private JTextField outputMS;
+    private SwingWorker worker;
 
     private ErrorDialog ed = new ErrorDialog();
 
@@ -29,6 +33,7 @@ public class Display
         {
             public void actionPerformed(ActionEvent e)
             {
+                if (worker != null) worker.cancel(true);
                 frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
             }
         });
@@ -37,21 +42,23 @@ public class Display
         {
             public void actionPerformed(ActionEvent e)
             {
-                ArrayList<String> exceptions = new ArrayList<String>();
-                DataHandler dh = new DataHandler(getExceptions());
-                long out = dh.updateData();
-                if (out > 0)
-                    outputMS.setText("" + out);
-                else
+                worker = new SwingWorker<Void, Void>()
                 {
-                    if (out == -1)
-                        ed.displayError("There was an error parsing NavData.");
-                    else if (out == -2)
-                        ed.displayError("There was an error fetching NavData from the internet.");
-                    else if (out == -3)
-                        ed.displayError("There was an error locating vSTARS/vERAM files.");
-                    outputMS.setText("-1");
-                }
+                    @Override
+                    protected Void doInBackground() throws Exception
+                    {
+                        updateNavDataButton.setEnabled(false);
+                        updateNavData();
+                        return null;
+                    }
+
+                    @Override
+                    protected void done()
+                    {
+                        updateNavDataButton.setEnabled(true);
+                    }
+                };
+                worker.execute();
             }
         });
 
@@ -92,5 +99,46 @@ public class Display
         {
         }
         return new ArrayList<String>();
+    }
+
+    private void updateNavData()
+    {
+        ArrayList<String> exceptions = new ArrayList<String>();
+        DataHandler dh = new DataHandler(getExceptions());
+        long a = -1;
+        try
+        {
+            a = dh.updateAirports();
+        } catch (Exception ex)
+        {
+            if (ex instanceof FileNotFoundException)
+                ed.displayError("There was an error locating vSTARS/vERAM files.");
+            else if (ex instanceof MalformedURLException)
+                ed.displayError("There was an error fetching NavData from the internet.");
+            else if (ex instanceof ConfigurationException)
+                ed.displayError("There was an error writing to vSTARS/vERAM files.");
+            else
+                ed.displayError("There was an error parsing NavData.");
+        }
+
+        long w = -1;
+        try
+        {
+            w = dh.updateWaypoints();
+        } catch (Exception ex)
+        {
+            if (ex instanceof FileNotFoundException)
+                ed.displayError("There was an error locating vSTARS/vERAM files.");
+            else if (ex instanceof MalformedURLException)
+                ed.displayError("There was an error fetching NavData from the internet.");
+            else if (ex instanceof ConfigurationException)
+                ed.displayError("There was an error writing to vSTARS/vERAM files.");
+            else
+                ed.displayError("There was an error parsing NavData.");
+        }
+        if (a == -1 || w == -1)
+            outputMS.setText("-1");
+        else
+            outputMS.setText("" + (a + w));
     }
 }

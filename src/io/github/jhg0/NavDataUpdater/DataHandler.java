@@ -23,40 +23,9 @@ public class DataHandler
 {
     private List<String> exceptions;
 
-    public DataHandler(List exceptions)
+    public DataHandler(List<String> exceptions)
     {
         this.exceptions = exceptions;
-    }
-
-    public long updateData()
-    {
-        long z = System.currentTimeMillis();
-        try
-        {
-            boolean a = updateAirports();
-            if (a) return -3;
-        } catch (Exception ex)
-        {
-            if (ex instanceof FileNotFoundException)
-                return -2;
-            else
-                return -1;
-        }
-
-        try
-        {
-            boolean a = updateWaypoints();
-            if (a) return -3;
-        } catch (Exception ex)
-        {
-            ex.printStackTrace();
-            if (ex instanceof FileNotFoundException)
-                return -2;
-            else
-                return -1;
-        }
-
-        return System.currentTimeMillis() - z;
     }
 
     private boolean isRemovable(String id, String type)
@@ -72,11 +41,12 @@ public class DataHandler
         return false;
     }
 
-    private boolean updateAirports() throws Exception
+    public long updateAirports() throws Exception
     {
+        long z = System.currentTimeMillis();
         File vSTARS = new File(System.getProperty("user.home") + "\\AppData\\Roaming\\vSTARS\\NavData");
         File vERAM = new File(System.getProperty("user.home") + "\\AppData\\Local\\vERAM");
-        if (!vSTARS.exists() && !vERAM.exists()) return true;
+        if (!vSTARS.exists() && !vERAM.exists()) return -3;
 
         URL xmlURL = new URL("http://www.myfsim.com/sectorfilecreation/Airports.xml");
         InputStream xml = xmlURL.openStream();
@@ -87,34 +57,34 @@ public class DataHandler
 
         doc.getDocumentElement().normalize();
         NodeList nList = doc.getElementsByTagName("Airport");
-
-        for (int temp = 0; temp < nList.getLength(); temp++)
+        int length = nList.getLength();
+        Node nNode = nList.item(0);
+        for (int temp = 0; temp < length; temp++)
         {
-            Node nNode = nList.item(temp);
-            if (nNode.getNodeType() == Node.ELEMENT_NODE)
-            {
-                Element eElement = (Element) nNode;
-                eElement.setAttribute("MagVar", "0");
-                if (isRemovable(eElement.getAttribute("ID"), null)) eElement.getParentNode().removeChild(eElement);
-            }
+            if (nNode == null || nNode.getNodeType() != Node.ELEMENT_NODE) break;
+            Element eElement = (Element) nNode;
+            nNode = nNode.getNextSibling();
+            eElement.setAttribute("MagVar", "0");
+            if (isRemovable(eElement.getAttribute("ID"), null))
+                eElement.getParentNode().removeChild(eElement);
         }
 
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
-
         DOMSource source = new DOMSource(doc);
         if (vSTARS.exists())
             transformer.transform(source, new StreamResult(vSTARS + "\\Airports.xml"));
         if (vERAM.exists())
             transformer.transform(source, new StreamResult(vERAM + "\\Airports.xml"));
-        return false;
+        return System.currentTimeMillis() - z;
     }
 
-    private boolean updateWaypoints() throws Exception
+    public long updateWaypoints() throws Exception
     {
+        long z = System.currentTimeMillis();
         File vSTARS = new File(System.getProperty("user.home") + "\\AppData\\Roaming\\vSTARS\\NavData");
         File vERAM = new File(System.getProperty("user.home") + "\\AppData\\Local\\vERAM");
-        if (!vSTARS.exists() && !vERAM.exists()) return true;
+        if (!vSTARS.exists() && !vERAM.exists()) throw new FileNotFoundException();
 
         URL xmlURL = new URL("http://www.myfsim.com/sectorfilecreation/Waypoints.xml");
         InputStream xml = xmlURL.openStream();
@@ -125,16 +95,15 @@ public class DataHandler
 
         doc.getDocumentElement().normalize();
         NodeList nList = doc.getElementsByTagName("Waypoint");
-
-        for (int temp = 0; temp < nList.getLength(); temp++)
+        int length = nList.getLength();
+        Node nNode = nList.item(0);
+        for (int temp = 0; temp < length; temp++)
         {
-            Node nNode = nList.item(temp);
-            if (nNode.getNodeType() == Node.ELEMENT_NODE)
-            {
-                Element eElement = (Element) nNode;
-                if (isRemovable(eElement.getAttribute("ID"), eElement.getAttribute("Type")))
-                    eElement.getParentNode().removeChild(eElement);
-            }
+            if (nNode == null || nNode.getNodeType() != Node.ELEMENT_NODE) break;
+            Element eElement = (Element) nNode;
+            nNode = nNode.getNextSibling();
+            if (isRemovable(eElement.getAttribute("ID"), eElement.getAttribute("Type")))
+                eElement.getParentNode().removeChild(eElement);
         }
 
         for (String s : getAdditions())
@@ -157,7 +126,7 @@ public class DataHandler
             transformer.transform(source, new StreamResult(vSTARS + "\\Waypoints.xml"));
         if (vERAM.exists())
             transformer.transform(source, new StreamResult(vERAM + "\\Waypoints.xml"));
-        return false;
+        return System.currentTimeMillis() - z;
     }
 
     private List<String> getAdditions()

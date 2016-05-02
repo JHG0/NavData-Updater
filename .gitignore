@@ -1,7 +1,7 @@
 /META-INF
 /out
 /src/META-INF
-!/vSQS.jar
+!/NavData Updater.jar
 
 # Created by https://www.gitignore.io/api/java,notepadpp,eclipse,intellij,osx,jetbrains,windows
 

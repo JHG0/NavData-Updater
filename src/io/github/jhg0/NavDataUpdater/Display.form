@@ -13,7 +13,7 @@
           <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Close"/>
+          <text value="&amp;Close"/>
         </properties>
       </component>
       <component id="ed5c1" class="javax.swing.JLabel">
@@ -48,10 +48,10 @@
       </component>
       <component id="dda0" class="javax.swing.JButton" binding="updateNavDataButton" default-binding="true">
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="4" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="0" row-span="1" col-span="4" vsize-policy="0" hsize-policy="0" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Update NavData"/>
+          <text value="&amp;Update NavData"/>
         </properties>
       </component>
     </children>
