@@ -3,6 +3,8 @@ _by Josh Glottmann_
 
 This software automatically updates NavData for vSTARS and vERAM. 
 
+Additionally, the software fixes an issue with runway magnetic variation. 
+
 The NavData is provided by [Casey Diers](http://www.myfsim.com/sectorfilecreation/vSTARSDump.php). 
 
 __[Download](https://github.com/JHG0/NavData-Updater/blob/master/NavData%20Updater.jar?raw=true)__
