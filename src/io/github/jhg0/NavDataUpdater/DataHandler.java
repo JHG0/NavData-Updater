@@ -44,7 +44,7 @@ public class DataHandler
     public long updateAirports() throws Exception
     {
         long z = System.currentTimeMillis();
-        File vSTARS = new File(System.getProperty("user.home") + "\\AppData\\Roaming\\vSTARS\\NavData");
+        File vSTARS = new File(System.getProperty("user.home") + "\\AppData\\Roaming\\vSTARS");
         File vERAM = new File(System.getProperty("user.home") + "\\AppData\\Local\\vERAM");
         if (!vSTARS.exists() && !vERAM.exists()) return -3;
 
@@ -82,7 +82,7 @@ public class DataHandler
     public long updateWaypoints() throws Exception
     {
         long z = System.currentTimeMillis();
-        File vSTARS = new File(System.getProperty("user.home") + "\\AppData\\Roaming\\vSTARS\\NavData");
+        File vSTARS = new File(System.getProperty("user.home") + "\\AppData\\Roaming\\vSTARS");
         File vERAM = new File(System.getProperty("user.home") + "\\AppData\\Local\\vERAM");
         if (!vSTARS.exists() && !vERAM.exists()) throw new FileNotFoundException();
 
@@ -132,8 +132,8 @@ public class DataHandler
 
     private List<String> getAdditions()
     {
-        if (exceptions == null || exceptions.isEmpty()) return new ArrayList<String>();
-        List<String> additions = new ArrayList<String>();
+        if (exceptions == null || exceptions.isEmpty()) return new ArrayList<>();
+        List<String> additions = new ArrayList<>();
         for (String s : exceptions)
             if (s.split("\\|").length == 3 || s.split("\\|").length == 4)
                 additions.add(s);

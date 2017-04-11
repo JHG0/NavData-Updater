@@ -79,12 +79,12 @@ public class Display
     {
         try
         {
-            File vSTARS = new File(System.getProperty("user.home") + "\\AppData\\Roaming\\vSTARS\\NavData\\NavDataExceptions.txt");
+            File vSTARS = new File(System.getProperty("user.home") + "\\AppData\\Roaming\\vSTARS\\NavDataExceptions.txt");
             File vERAM = new File(System.getProperty("user.home") + "\\AppData\\Local\\vERAM\\NavDataExceptions.txt");
             File f;
             if (vSTARS.exists()) f = vSTARS;
             else if (vERAM.exists()) f = vERAM;
-            else return new ArrayList<String>();
+            else return new ArrayList<>();
             BufferedReader br = new BufferedReader(new FileReader(f));
             String line = br.readLine();
             String s = "";
@@ -98,12 +98,12 @@ public class Display
         } catch (Exception ignored)
         {
         }
-        return new ArrayList<String>();
+        return new ArrayList<>();
     }
 
     private void updateNavData()
     {
-        ArrayList<String> exceptions = new ArrayList<String>();
+        ArrayList<String> exceptions = new ArrayList<>();
         DataHandler dh = new DataHandler(getExceptions());
         long a = -1;
         try

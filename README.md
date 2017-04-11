@@ -1,6 +1,8 @@
 # NavData Updater
 _by Josh Glottmann_
 
+**Version 1.1** - 11/04/2017
+
 This software automatically updates NavData for vSTARS and vERAM. 
 
 Additionally, the software fixes an issue with runway magnetic variation. 
