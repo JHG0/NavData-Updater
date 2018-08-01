@@ -1,7 +1,7 @@
 # NavData Updater
 _by Josh Glottmann_
 
-**Version 1.1** - 11/04/2017
+**Version 1.1.1** - 08/01/2018
 
 This software automatically updates NavData for vSTARS and vERAM. 
 
