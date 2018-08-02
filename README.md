@@ -9,7 +9,7 @@ Additionally, the software fixes an issue with runway magnetic variation.
 
 The NavData is provided by [Casey Diers](http://www.myfsim.com/sectorfilecreation/vSTARSDump.php). 
 
-__[Download](https://github.com/JHG0/NavData-Updater/blob/master/NavData%20Updater.jar?raw=true)__
+__[Download](https://github.com/glott/NavData-Updater/blob/master/NavData%20Updater.jar?raw=true)__
 
 #### NavDataExceptions.txt
 This is an optional file that you can create in either `%appdata%\vSTARS\NavData` or `C:\Users\Username\AppData\Local\vERAM`.
