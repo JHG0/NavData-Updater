@@ -72,7 +72,7 @@ public class DataHandler
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
         DOMSource source = new DOMSource(doc);
         if (vSTARS.exists())
             transformer.transform(source, new StreamResult(vSTARS + "\\Airports.xml"));
@@ -124,6 +124,8 @@ public class DataHandler
 
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
         DOMSource source = new DOMSource(doc);
         if (vSTARS.exists())
             transformer.transform(source, new StreamResult(vSTARS + "\\Waypoints.xml"));
