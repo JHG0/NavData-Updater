@@ -1,4 +1,4 @@
-package io.github.jhg0.NavDataUpdater;
+package io.github.glott.NavDataUpdater;
 
 import javax.swing.*;
 import java.awt.*;

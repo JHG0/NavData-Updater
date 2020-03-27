@@ -1,5 +1,4 @@
-package io.github.jhg0.NavDataUpdater;
-
+package io.github.glott.NavDataUpdater;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -8,6 +7,7 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -71,6 +71,8 @@ public class DataHandler
 
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
         DOMSource source = new DOMSource(doc);
         if (vSTARS.exists())
             transformer.transform(source, new StreamResult(vSTARS + "\\Airports.xml"));

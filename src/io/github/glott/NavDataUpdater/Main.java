@@ -1,4 +1,4 @@
-package io.github.jhg0.NavDataUpdater;
+package io.github.glott.NavDataUpdater;
 
 public class Main
 {

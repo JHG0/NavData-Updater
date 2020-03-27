@@ -1,4 +1,4 @@
-package io.github.jhg0.NavDataUpdater;
+package io.github.glott.NavDataUpdater;
 
 import javax.naming.ConfigurationException;
 import javax.swing.*;
@@ -75,7 +75,7 @@ public class Display
         frame.setLocationRelativeTo(null);
     }
 
-    private List<String> getExceptions()
+    public List<String> getExceptions()
     {
         try
         {
@@ -101,7 +101,7 @@ public class Display
         return new ArrayList<>();
     }
 
-    private void updateNavData()
+    public void updateNavData()
     {
         ArrayList<String> exceptions = new ArrayList<>();
         DataHandler dh = new DataHandler(getExceptions());
